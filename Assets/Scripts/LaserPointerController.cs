@@ -1,13 +1,19 @@
-﻿using UnityEngine;
+﻿/*
+ * Laser Pointer Controller Script
+ * Must be attached to a child object under Controller (left/right) object
+ */
+
+using UnityEngine;
 using System.Collections;
 using Valve.VR;
 
-public class LaserPointerController : MonoBehaviour {
-
+public class LaserPointerController : MonoBehaviour
+{
     public float MaxLaserDistance = 30f;
     public EVRButtonId PointerButton = EVRButtonId.k_EButton_SteamVR_Touchpad;
     public Material LaserInvalidMaterial, LaserValidMaterial;
-    public GameObject PointerTipPrefab;
+    public GameObject PointerTipPrefab; // Set to None to disable pointer tip
+    public bool ActivateOnTouch = true; // Set to true if touch is used instead of press
 
     SteamVR_TrackedObject trackedObj;
     Transform parentTransform;
@@ -30,29 +36,31 @@ public class LaserPointerController : MonoBehaviour {
         get;
         private set;
     }
-    
-    // Use this for initialization
-    void Start () {
+
+    void Start()
+    {
         trackedObj = GetComponentInParent<SteamVR_TrackedObject>();
         parentTransform = GetComponentInParent<Transform>();
         lineRenderer = GetComponent<LineRenderer>();
         if (PointerTipPrefab != null)
         {
             pointerTipInstance = Instantiate(PointerTipPrefab);
-            pointerTipInstance.transform.SetParent(this.transform);
+            pointerTipInstance.transform.SetParent(transform);
             pointerTipInstance.SetActive(false);
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         var inputDevice = SteamVR_Controller.Input((int)trackedObj.index);
-        LaserActive = inputDevice.GetPress(PointerButton);
+        LaserActive = ActivateOnTouch ? inputDevice.GetTouch(PointerButton) : inputDevice.GetPress(PointerButton);
 
         // Turn on/off laser beam line renderer
         lineRenderer.enabled = LaserActive;
+    }
 
+    void FixedUpdate()
+    {
         // Update laser
         if (LaserActive)
         {
