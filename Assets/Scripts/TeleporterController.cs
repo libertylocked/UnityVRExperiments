@@ -30,8 +30,8 @@ public class TeleporterController : MonoBehaviour
         if (TargetPlayareaPrefab != null)
         {
             targetPlayareaInstance = Instantiate(TargetPlayareaPrefab);
-            targetPlayareaInstance.transform.SetParent(transform);
-            targetPlayareaInstance.GetComponent<MeshRenderer>().enabled = false;
+            targetPlayareaInstance.transform.SetParent(null);
+            targetPlayareaInstance.SetActive(false);
         }
     }
 
@@ -56,11 +56,10 @@ public class TeleporterController : MonoBehaviour
 
         if (targetPlayareaInstance != null)
         {
-            targetPlayareaInstance.GetComponent<MeshRenderer>().enabled = targetValid;
+            targetPlayareaInstance.SetActive(targetValid);
             if (targetValid)
             {
                 targetPlayareaInstance.transform.position = targetPos;
-                targetPlayareaInstance.transform.rotation = Quaternion.identity;
             }
         }
     }

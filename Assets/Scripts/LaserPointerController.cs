@@ -45,7 +45,7 @@ public class LaserPointerController : MonoBehaviour
         if (PointerTipPrefab != null)
         {
             pointerTipInstance = Instantiate(PointerTipPrefab);
-            pointerTipInstance.transform.SetParent(transform);
+            pointerTipInstance.transform.SetParent(null);
             pointerTipInstance.SetActive(false);
         }
     }
